@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using WebSecurity;
+using WebSecurity.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +18,14 @@ builder.Services.AddAuthentication(Constants.CookieScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(Constants.HRClaimPolicy, policy => { policy.RequireClaim(Constants.HRDepartmentClaimType, Constants.HRDepartmentClaimValue); });
+    options.AddPolicy(Constants.HRClaimPolicy, policy =>
+    {
+        policy.RequireClaim(Constants.HRDepartmentClaimType, Constants.HRDepartmentClaimValue);
+        policy.Requirements.Add(new ProbationRequirement(90));
+    });
 });
+
+builder.Services.AddSingleton<IAuthorizationHandler, ProbationHandler>();
 
 builder.Services.AddRazorPages();
 
