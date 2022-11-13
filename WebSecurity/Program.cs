@@ -1,6 +1,17 @@
+using WebSecurity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthentication()
+    .AddCookie("MyCookieAuthenticationScheme", options =>
+    {
+        options.Cookie.Name = Constants.CookieScheme;
+        // options.Cookie.SameSite = SameSiteMode.None;
+        // options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        // options.Cookie.IsEssential = true;
+    });
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -18,6 +29,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
