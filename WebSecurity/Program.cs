@@ -3,14 +3,21 @@ using WebSecurity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthentication()
-    .AddCookie("MyCookieAuthenticationScheme", options =>
+builder.Services.AddAuthentication(Constants.CookieScheme)
+    .AddCookie(Constants.CookieScheme, options =>
     {
         options.Cookie.Name = Constants.CookieScheme;
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
         // options.Cookie.SameSite = SameSiteMode.None;
         // options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         // options.Cookie.IsEssential = true;
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Constants.HRClaimPolicy, policy => { policy.RequireClaim(Constants.HRDepartmentClaimType, Constants.HRDepartmentClaimValue); });
+});
 
 builder.Services.AddRazorPages();
 

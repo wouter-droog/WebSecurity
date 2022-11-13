@@ -24,7 +24,8 @@ public class Login : PageModel
             {
                 new Claim(ClaimTypes.Name, Credential.UserName),
                 new Claim(ClaimTypes.Email, "admin@myWebsite.com"),
-                new Claim(ClaimTypes.Role, Constants.AdminRole)
+                new Claim(ClaimTypes.Role, Constants.AdminRole),
+                new Claim(Constants.HRDepartmentClaimType, Constants.HRDepartmentClaimValue)
             };
             var identity = new ClaimsIdentity(claims, Constants.CookieScheme);
             var principal = new ClaimsPrincipal(identity);

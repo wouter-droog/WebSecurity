@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace WebSecurity.Pages;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebSecurity.Pages;
-
+[Authorize(Roles = Constants.AdminRole)]
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
@@ -11,7 +12,7 @@ public class IndexModel : PageModel
     {
         _logger = logger;
     }
-    
+
     public void OnGet()
     {
     }
