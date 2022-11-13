@@ -11,6 +11,7 @@ builder.Services.AddAuthentication(Constants.CookieScheme)
         options.Cookie.Name = Constants.CookieScheme;
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
         // options.Cookie.SameSite = SameSiteMode.None;
         // options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         // options.Cookie.IsEssential = true;

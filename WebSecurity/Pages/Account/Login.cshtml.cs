@@ -31,7 +31,12 @@ public class Login : PageModel
             var identity = new ClaimsIdentity(claims, Constants.CookieScheme);
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync("MyCookieAuthenticationScheme", principal);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = Credential.ShouldRememberMe
+            };
+
+            await HttpContext.SignInAsync("MyCookieAuthenticationScheme", principal, authProperties);
 
             return RedirectToPage("/Index");
         }
@@ -52,4 +57,6 @@ public class Credential
     [DataType(DataType.Password)]
     [Display(Name = "Password")]
     public string? Password { get; set; }
+
+    [Display(Name = "Remember me?")] public bool ShouldRememberMe { get; set; }
 }
