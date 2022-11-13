@@ -8,4 +8,26 @@
 <div class="text-center">
     <h1 class="display-4">Human Resource</h1>
     <p>Welcome to the HR department</p>
+    
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Temp C</th>
+            <th>Temp F</th>
+            <th>Summary</th>
+        </tr>
+        </thead>
+        <tbody>
+                @foreach(var forecast in Model.WeatherForecastDtos)
+                {
+                    <tr>
+                        <td>@forecast.Date.ToShortDateString()</td>
+                        <td>@forecast.TemperatureC.ToString()</td>
+                        <td>@forecast.TemperatureF.ToString()</td>
+                        <td>@forecast.Summary</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
 </div>

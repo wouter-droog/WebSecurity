@@ -30,6 +30,11 @@ builder.Services.AddSingleton<IAuthorizationHandler, ProbationHandler>();
 
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpClient("OurWebAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7211/");
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
