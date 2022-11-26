@@ -6,3 +6,6 @@ riderModule.iml
 /_ReSharper.RiderPlugin/
 /_ReSharper.RiderPlugin.Caches/
 appsettings.Development.json
+
+.idea*
+.Idea*
