@@ -1,4 +1,5 @@
 @page
+@using WebSecurity.Models.Dtos
 @model HumanResource
 
 @{
@@ -19,7 +20,7 @@
         </tr>
         </thead>
         <tbody>
-                @foreach(var forecast in Model.WeatherForecastDtos)
+                @foreach(var forecast in Model.WeatherForecastDtos ?? new List<WeatherForecastDto>())
                 {
                     <tr>
                         <td>@forecast.Date.ToShortDateString()</td>
