@@ -1,7 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebAppIdentity.Services;
 
 namespace WebAppIdentity.Pages.Account;
 
@@ -9,11 +12,13 @@ public class Register : PageModel
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly IEmailService _emailService;
     
-    public Register(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public Register(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailService emailService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _emailService = emailService;
     }
 
     [BindProperty]
@@ -42,13 +47,19 @@ public class Register : PageModel
         // check if user is created successfully
         if (result.Succeeded)
         {
-            // // sign in user
-            // await _signInManager.SignInAsync(user, isPersistent: false);
-            //     
-            // // redirect to home page
-            // return RedirectToPage("/Index");
+            // generate email confirmation token
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             
-            return RedirectToPage("Account/Login");
+            //return Redirect(Url.PageLink("/Account/ConfirmEmail", values: new {email = user.Email, token}) ?? "Index");
+
+            // generate confirmation link
+            var confirmationLink = Url.Page("/Account/ConfirmEmail", null, new {email = user.Email, token}, Request.Scheme);
+            
+            // send confirmation email
+            await _emailService.Send(user.Email, "Confirm your email",
+                $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>.");
+
+            return RedirectToPage("Login");
         }
             
         // add errors to model state

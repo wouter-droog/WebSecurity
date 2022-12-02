@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebAppIdentity.Data;
+using WebAppIdentity.Services;
+using WebAppIdentity.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +23,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 
         options.User.RequireUniqueEmail = true;
+        options.SignIn.RequireConfirmedEmail = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders() // this generate the email confirmation token
     ;
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -30,6 +34,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
+
+// When SmtpSetting is requested it will be filled with the values from appsettings.json
+builder.Services.Configure<SmtpSetting>(builder.Configuration.GetSection("SMTP"));
+
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 builder.Services.AddRazorPages();
 
