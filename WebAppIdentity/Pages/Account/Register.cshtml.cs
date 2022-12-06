@@ -1,20 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Net.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebAppIdentity.Data.Account;
 using WebAppIdentity.Services;
 
 namespace WebAppIdentity.Pages.Account;
 
 public class Register : PageModel
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly IEmailService _emailService;
     
-    public Register(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailService emailService)
+    public Register(UserManager<User> userManager, SignInManager<User> signInManager, IEmailService emailService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -35,10 +34,12 @@ public class Register : PageModel
         if (!ModelState.IsValid) return Page();
         
         // create user
-        var user = new IdentityUser
+        var user = new User
         {
             UserName = RegisterViewModel.Email,
-            Email = RegisterViewModel.Email
+            Email = RegisterViewModel.Email,
+            Department = RegisterViewModel.Department,
+            Position = RegisterViewModel.Position
         };
             
         // create user in database
@@ -87,4 +88,10 @@ public class RegisterViewModel
     [DataType(DataType.Password)]
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string ConfirmPassword { get; set; }
+
+    [Required]
+    public string Department { get; set; }
+
+    [Required]
+    public string Position { get; set; }
 }

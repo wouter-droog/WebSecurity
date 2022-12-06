@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebAppIdentity.Data.Account;
 
 namespace WebAppIdentity.Pages.Account;
 
 public class Login : PageModel
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public Login(SignInManager<IdentityUser> signInManager)
+    public Login(SignInManager<User> signInManager)
     {
         _signInManager = signInManager;
     }
