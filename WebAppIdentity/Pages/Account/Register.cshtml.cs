@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -41,13 +42,22 @@ public class Register : PageModel
             Department = RegisterViewModel.Department,
             Position = RegisterViewModel.Position
         };
-            
+
+
         // create user in database
         var result = await _userManager.CreateAsync(user, RegisterViewModel.Password);
             
         // check if user is created successfully
         if (result.Succeeded)
         {
+            
+            var claimDepartment = new Claim("Department", RegisterViewModel.Department);
+            var claimPosition = new Claim("Position", RegisterViewModel.Position);
+        
+            // add claims to user in database with user manager
+            await _userManager.AddClaimAsync(user, claimDepartment);
+            await _userManager.AddClaimAsync(user, claimPosition);
+            
             // generate email confirmation token
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             
