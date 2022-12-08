@@ -36,7 +36,13 @@ public class Login : PageModel
         {
             return RedirectToPage("/Index");
         }
-
+        
+        // check if 2fa is required
+        if (result.RequiresTwoFactor)
+        {
+            return RedirectToPage("/Account/LoginWith2fa", new { Email = LoginViewModel.Email, RememberMe = true });
+        }
+        
         if (result.IsLockedOut)
         {
             ModelState.AddModelError("Login", "User account locked out.");
