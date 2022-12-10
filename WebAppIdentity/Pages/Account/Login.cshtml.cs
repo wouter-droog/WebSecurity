@@ -40,7 +40,7 @@ public class Login : PageModel
         // check if 2fa is required
         if (result.RequiresTwoFactor)
         {
-            return RedirectToPage("/Account/LoginWith2fa", new { Email = LoginViewModel.Email, RememberMe = true });
+            return RedirectToPage("/Account/LoginTwoFactorAuthenticator");
         }
         
         if (result.IsLockedOut)
