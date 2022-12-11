@@ -12,12 +12,15 @@
     Use the form below to log in to your account.
 </p>
 
+
+
 <form method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
     <div>
         <label for="code">Authenticator code:</label>
-        <input type="text" id="code" name="code" />
+        <input type="text" id="code" name="code"/>
     </div>
     <div>
-        <input type="submit" value="Log in" />
+        <input type="submit" value="Log in"/>
     </div>
 </form>

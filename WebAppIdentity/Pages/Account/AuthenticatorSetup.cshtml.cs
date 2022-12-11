@@ -1,7 +1,10 @@
+using System.Drawing;
+using System.Drawing.Imaging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
+using QRCoder;
 using WebAppIdentity.Data.Account;
 
 namespace WebAppIdentity.Pages.Account
@@ -13,6 +16,9 @@ namespace WebAppIdentity.Pages.Account
         
         [BindProperty]
         public string? AuthenticatorKey { get; set; }
+        
+        // property for the QR code
+        public byte[] QrCodeBytes { get; set; }
 
         public AuthenticatorSetup(UserManager<User> userManager)
         {
@@ -32,6 +38,9 @@ namespace WebAppIdentity.Pages.Account
             // Microsoft Authenticator app.
             await _userManager.ResetAuthenticatorKeyAsync(user);
             AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user) ?? string.Empty;
+            
+            // Generate the QR code
+            QrCodeBytes = GenerateQrCode("Droog app", AuthenticatorKey, user.Email!);
             
             // if AuthenticatorKey is null or empty, add error to model state
             if (string.IsNullOrEmpty(AuthenticatorKey))
@@ -67,7 +76,22 @@ namespace WebAppIdentity.Pages.Account
             // If the code is valid, the user's two-factor authentication setup
             // is complete. You can redirect the user to another page or show
             // a confirmation message.
-            return RedirectToPage("./LoginTwoFactorAuthenticator");
+            return RedirectToPage("Index");
+        }
+        
+        private static byte[] GenerateQrCode(string provider, string authenticatorKey, string userEmail)
+        {
+            // Generate the QR code
+            var qrCodeGenerator = new QRCodeGenerator();
+            var qrCodeData = qrCodeGenerator.CreateQrCode($"otpauth://totp/{provider}:{userEmail}?secret={authenticatorKey}&issuer={provider}", QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new PngByteQRCode(qrCodeData);
+            var qrCodeAsBytes = qrCode.GetGraphic(20);
+            return qrCodeAsBytes;
+            
+            // using var stream = new MemoryStream();
+            // qrCodeAsBitmap.Save(stream, ImageFormat.Png);
+            // return stream.ToArray();
+            
         }
     }
 }

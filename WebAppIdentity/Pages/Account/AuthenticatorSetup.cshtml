@@ -40,6 +40,10 @@
     <p>@Model.AuthenticatorKey</p>
 </div>
 
+<p>
+    <img src="@String.Format("data:image/png;base64, {0}", @Convert.ToBase64String(Model.QrCodeBytes))" alt="QR code for two-factor authentication" width="300" height="300" />
+</p>
+
 <form method="post">
     <div>
         <label for="code">Authenticator code:</label>
